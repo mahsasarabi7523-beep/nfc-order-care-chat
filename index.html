@@ -1,1 +1,428 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ چتی • پیگیری‌های تیم اردر کر (NFC Order Care)</title>
+<style>
+/* ---------- فونت (SNAPP) ----------
+   اگر می‌خوای ۱-فایل باشه: WOFF2 رو Base64 کن و جایگزین PASTE... کن.
+*/
+@font-face{
+  font-family:'SNAPP';
+  font-style:normal;font-weight:400;
+  src: local('SNAPP1.9'), local('SNAPP'),
+       url('data:application/font-woff2;charset=utf-8;base64,PASTE_BASE64_WOFF2_REGULAR_HERE') format('woff2');
+  font-display:swap;
+}
+@font-face{
+  font-family:'SNAPP';
+  font-style:normal;font-weight:700;
+  src: local('SNAPP1.9-BOLD'), local('SNAPP Bold'),
+       url('data:application/font-woff2;charset=utf-8;base64,PASTE_BASE64_WOFF2_BOLD_HERE') format('woff2');
+  font-display:swap;
+}
+/* ---------------------------------- */
+:root{--pink:#ff0a7a; --pink2:#ff6fb3; --ink:#0f172a; --bg:#f7f8fc; --soft:rgba(17,24,39,.08);}
+*{box-sizing:border-box;font-family:'SNAPP',system-ui,'Segoe UI',Tahoma,Arial,sans-serif}
+body{margin:0;background:
+  radial-gradient(1200px 440px at 50% -200px,#ff8ecb 0%,transparent 60%),
+  linear-gradient(#fff 0,#fff 120px,var(--bg) 220px);color:var(--ink)}
+.header{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:16px 20px;color:#fff}
+.header h1{margin:0;font-size:clamp(18px,3.2vw,26px);font-weight:700;text-shadow:0 6px 24px rgba(0,0,0,.25)}
+.header .tools{display:flex;gap:8px;align-items:center}
+.btn{border:none;border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn.primary{background-image:linear-gradient(to top,var(--pink),var(--pink2));color:#fff}
+.btn.ghost{background:#fff;color:var(--pink);border:1px solid #ffd2e9}
+.wrap{max-width:1100px;margin:10px auto 36px;padding:0 14px}
+.topbar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.select{flex:1;display:flex;gap:8px;flex-wrap:wrap}
+select, input[type="search"]{flex:1;min-width:260px;padding:10px;border:1px solid #ffd7ea;border-radius:12px;outline:none;background:#fff}
+.chat{background:#fff;border:1px solid #ffe3f1;border-radius:20px;box-shadow:0 18px 44px var(--soft);height:72vh;display:flex;flex-direction:column}
+.stream{flex:1;overflow:auto;padding:18px 16px 8px}
+.row{display:flex;gap:10px;margin-bottom:14px}
+.msg{max-width:78%;padding:12px 14px;border-radius:16px;box-shadow:0 8px 22px rgba(17,24,39,.06);line-height:1.8}
+.bot{background:#fff7fb;border:1px solid #ffd8ea;border-top-right-radius:4px}
+.user{background:#e7f5ff;border:1px solid #cfe9ff;border-top-left-radius:4px;margin-right:auto}
+.avatar{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:radial-gradient(circle at 30% 30%,#ffd1ea,#ff9bd0);font-size:18px}
+.actions{padding:10px;border-top:1px solid #f1f5f9;display:flex;flex-wrap:wrap;gap:8px}
+.qr{padding:9px 12px;border:1px solid #ffd7ea;border-radius:999px;background:#fff;font-weight:700;color:var(--pink);cursor:pointer}
+.qr:hover{border-color:var(--pink);box-shadow:0 6px 16px rgba(255,10,122,.18);transform:translateY(-1px)}
+.typing{display:inline-block;min-width:40px}
+.typing span{display:inline-block;width:6px;height:6px;margin:0 2px;background:#cbd5e1;border-radius:50%;animation:b 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s} .typing span:nth-child(3){animation-delay:.4s}
+@keyframes b{0%,80%,100%{opacity:.2;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.calc{background:#fff;border:1px dashed #ffcce5;border-radius:12px;padding:10px;margin-top:8px}
+.calc .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.calc label{font-size:12px;font-weight:700;color:#334155}
+.calc input{width:100%;padding:8px;border:1px solid #ffd1ea;border-radius:10px;outline:none}
+.calc .out{margin-top:8px;background:#f8fbff;border:1px solid #dbeafe;border-radius:10px;padding:8px;font-weight:700}
+@media (max-width:760px){.msg{max-width:92%}.calc .row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>FAQ چتی • پیگیری‌های تیم اردر کر</h1>
+    <div class="tools">
+      <button class="btn ghost" id="btnBack">مرحله قبل</button>
+      <button class="btn primary" id="btnRestart">شروع مجدد</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="select">
+        <select id="faqSelect" title="انتخاب ریزن/سناریو"></select>
+        <input id="search" type="search" placeholder="جست‌وجوی ریزن… (بنویس، Enter بزن)">
+      </div>
+      <button class="btn ghost" id="btnCopy">کپی لینک</button>
+    </div>
+
+    <div class="chat" id="chat">
+      <div class="stream" id="stream"></div>
+      <div class="actions" id="actions"></div>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   1) همه فلوها (خلاصه‌شده از نسخه‌هات)
+   ========================= */
+const FLOW_PRE_ASSIGN={start:{id:'start',text:'فاکتور اساین شد — لیبل را چک کن.',icon:'🕒',next:'label_check'},
+label_check:{id:'label_check',text:'وضعیت لیبل؟',icon:'🏷️',branches:[
+{label:'بدون لیبل (۵ سفارش اخیر را چک کن)',target:'no_label_recent'},
+{label:'ثبت سفارش',target:'registered_label'},{label:'نیازمند تماس',target:'need_contact_label'}]},
+no_label_recent:{id:'no_label_recent',text:'۵ سفارش اخیر — وضعیت؟',icon:'✅',branches:[
+{label:'ارسال شده برای رستوران (ثبت سفارش)',target:'registered_label'},
+{label:'رسیده به دست رستوران (VMS Delay) → تماس با مجموعه',target:'vms_flow'},
+{label:'به دست رستوران نرسیده (مثل ثبت سفارش)',target:'registered_label'}]},
+vms_flow:{id:'vms_flow',text:'VMS Delay: تماس با مجموعه. اگر مشکل داشت، مثل ریزن‌های نیازمند تماس پیگیری کن.',icon:'🏪',next:'end'},
+registered_label:{id:'registered_label',text:'راهکارهای تازه‌سازی/بازخوانی/بستن و بازکردن/بررسی وضعیت.',icon:'🏷️',next:'end'},
+need_contact_label:{id:'need_contact_label',text:'نیازمند تماس: علت را بپرس و طبق ریزن‌ها ادامه بده.',icon:'❓',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_ITEM_UNAVAILABLE={start:{id:'start',text:'محصول/برند موردنظر موجود نیست.',icon:'🧩',next:'vendor_flag'},
+vendor_flag:{id:'vendor_flag',text:'آیا مجموعه خودش ناموجود زده؟',icon:'🏷️',branches:[
+{label:'خیر → تماس با مجموعه',target:'call_vendor'},{label:'بله → برو نوع مجموعه/سفارش',target:'order_kind'}]},
+call_vendor:{id:'call_vendor',text:'تماس با مجموعه (اسکریپت).',icon:'📞',next:'order_kind'},
+order_kind:{id:'order_kind',text:'نوع مجموعه/سفارش:',icon:'🏪',branches:[
+{label:'رستوران',target:'rest_contact'},{label:'آدر سرویس',target:'addr_service'},{label:'تک‌آیتم کش‌بک',target:'cashback_single'}]},
+rest_contact:{id:'rest_contact',text:'رستوران → تماس با مشتری. تصمیم مشتری؟',icon:'☎️',branches:[
+{label:'جایگزین کمتر → عودت مابه‌التفاوت کیف پول',target:'end'},
+{label:'جایگزین بیشتر → پروسه دلتا',target:'end'},
+{label:'حذف آیتم → عودت مابه‌التفاوت',target:'end'},
+{label:'لغو کل سفارش → پروسه کنسلی',target:'end'}]},
+addr_service:{id:'addr_service',text:'آدر سرویس:',icon:'🚚',branches:[
+{label:'تک‌آیتم → کنسلی',target:'end'},
+{label:'چندآیتم و همه ناموجود → اتوکال کنسلی',target:'end'},
+{label:'چندآیتم و بخشی ناموجود → تماس با مشتری (جایگزین/حذف/کنسلی)',target:'end'}]},
+cashback_single:{id:'cashback_single',text:'تک‌آیتم کش‌بک → اتوکال کنسلی.',icon:'🤖',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_DELAY={start:{id:'start',text:'زمان ارسال/آماده‌سازی طولانی‌تر می‌شود.',icon:'🕒',next:'label_kind'},
+label_kind:{id:'label_kind',text:'نوع لیبل؟',icon:'🏷️',branches:[
+{label:'نیازمند تماس (معمولی)',target:'courier'},{label:'تأیید شده نیازمند تماس (محاسبه زمان نهایی)',target:'calc'}]},
+courier:{id:'courier',text:'نوع پیک؟',icon:'🚚',branches:[
+{label:'اکسپرس',target:'exp_time'},{label:'پیک رستوران',target:'res_time'}]},
+exp_time:{id:'exp_time',text:'اکسپرس: ۰–۴۰ اصلاح فاکتور / ۴۰–۱۲۰ تماس / ۱۲۰+ اتوکال کنسلی.',icon:'⏱️',next:'end'},
+res_time:{id:'res_time',text:'پیک رستوران: ۰–۷۰ اصلاح / ۷۰–۱۲۰ تماس / ۱۲۰+ اتوکال کنسلی.',icon:'⏱️',next:'end'},
+calc:{id:'calc',text:'محاسبه و اعلام زمان نهایی به مشتری (مقادیر را وارد کن).',icon:'🧮'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_ADDRESS_ISSUE={start:{id:'start',text:'آدرس مشتری ناقص/اشتباه است.',icon:'⚠️',next:'pay_type'},
+pay_type:{id:'pay_type',text:'نوع پرداخت؟',icon:'💳',branches:[
+{label:'غیرنقدی',target:'online_label'},{label:'نقدی',target:'cash_issue'}]},
+online_label:{id:'online_label',text:'لیبل سفارش؟',icon:'🏷️',branches:[
+{label:'نیازمند تماس → عدم پاسخ = کنسلی',target:'online_nc'},
+{label:'تأیید شده نیازمند تماس',target:'online_approved'}]},
+online_nc:{id:'online_nc',text:'تماس با مشتری؛ عدم پاسخ: کنسلی؛ پاسخ: ثبت آدرس دقیق.',icon:'☎️',next:'profile_fix'},
+online_approved:{id:'online_approved',text:'در عدم پاسخ، استعلام کنسلی از مجموعه؛ در صورت رد: نگه‌داری تا پیگیری مشتری.',icon:'☎️',branches:[
+{label:'پاسخگو نبود → استعلام کنسلی از مجموعه',target:'vendor_cancel_chk'},
+{label:'پاسخگو بود → ثبت آدرس دقیق',target:'profile_fix'}]},
+vendor_cancel_chk:{id:'vendor_cancel_chk',text:'نتیجه استعلام کنسلی از مجموعه.',icon:'🏪',branches:[
+{label:'تأیید شد → کنسلی',target:'end'},{label:'تأیید نشد → نگه‌داری سفارش',target:'end'}]},
+cash_issue:{id:'cash_issue',text:'(نقدی) آدرس ناقص یا مکان عمومی؟',icon:'❓',branches:[
+{label:'آدرس ناقص → تماس و ثبت در توضیحات اسنپ‌فود',target:'profile_fix'},
+{label:'مکان عمومی → کنسلی + تماس با مشتری',target:'end'}]},
+profile_fix:{id:'profile_fix',text:'تکمیل پروفایل (نام/نام‌خانوادگی + موبایل در «شماره تلفن»).',icon:'🖊️',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_CANNOT_NOTE={start:{id:'start',text:'امکان اجرای توضیحات مشتری وجود ندارد.',icon:'⚠️',next:'vendor_told'},
+vendor_told:{id:'vendor_told',text:'آیا مجموعه مشکل را اعلام کرده؟',icon:'🏪',branches:[
+{label:'خیر → تماس با مجموعه',target:'call_vendor'},{label:'بله → ادامه با مشتری',target:'cust_choice'}]},
+call_vendor:{id:'call_vendor',text:'تماس با مجموعه جهت بررسی.',icon:'📞',next:'cust_choice'},
+cust_choice:{id:'cust_choice',text:'تماس با مشتری و تصمیم:',icon:'☎️',branches:[
+{label:'بدون توضیحات ارسال شود → ثبت و اصلاحیه',target:'end'},
+{label:'هزینه دارد و می‌پذیرد → دلتا',target:'end'},
+{label:'نمی‌پذیرد → کنسلی',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_NO_SHOW={start:{id:'start',text:'مشتری برای تحویل مراجعه نکردند.',icon:'⚠️',next:'call'},
+call:{id:'call',text:'تماس با مشتری → عدم پاسخ: تماس با مجموعه و ارسال اصلاحیه.',icon:'☎️',branches:[
+{label:'پذیرفت → ثبت مورد و اصلاحیه',target:'end'},
+{label:'نپذیرفت → متقاعدسازی تحویل حضوری',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_WEIGHT={start:{id:'start',text:'تغییر وزن محصول.',icon:'🏷️',next:'desc'},
+desc:{id:'desc',text:'توضیحات مجموعه کامل است؟',icon:'✅',branches:[
+{label:'کامل است',target:'check'},{label:'ناقص است → تماس با مجموعه',target:'check'}]},
+check:{id:'check',text:'چک قیمت و وزن.',icon:'⚖️',branches:[
+{label:'کمتر → تماس با مشتری',target:'less'},{label:'بیشتر → تماس با مشتری',target:'more'}]},
+less:{id:'less',text:'پاسخ مشتری؟',icon:'⚖️',branches:[
+{label:'مورد تأیید هست → ثبت در توضیحات',target:'end'},
+{label:'مورد تأیید نیست → کنسلی',target:'end'}]},
+more:{id:'more',text:'پاسخ مشتری؟',icon:'⚖️',branches:[
+{label:'مورد تأیید هست → دلتا',target:'end'},
+{label:'مورد تأیید نیست → کنسلی',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_MISMATCH={start:{id:'start',text:'سفارش با مغایرت ارسال شده.',icon:'⚠️',next:'courier'},
+courier:{id:'courier',text:'پیک سفارش چیست؟',icon:'🚚',branches:[
+{label:'اکسپرس/اکسپرس پلاس',target:'desc'},{label:'پیک مجموعه',target:'vendor_courier'}]},
+desc:{id:'desc',text:'توضیحات مجموعه چگونه است؟',icon:'✅',branches:[
+{label:'مورد تأیید هست → ثبت تیکت + ثبت متن + ارسال اصلاحیه',target:'end'},
+{label:'مورد تأیید نیست → تماس با مجموعه → ثبت تیکت + ثبت متن + ارسال اصلاحیه',target:'end'}]},
+vendor_courier:{id:'vendor_courier',text:'تماس با مشتری و تصمیم',icon:'☎️',branches:[
+{label:'اصلاح (عودت مابه‌التفاوت به کیف پول)',target:'end'},
+{label:'لغو سفارش (هماهنگی با مجموعه)',target:'end'},
+{label:'ارسال صحیح سفارش → استعلام موجودی',target:'stock'}]},
+stock:{id:'stock',text:'استعلام موجودی از مجموعه',icon:'🏪',branches:[
+{label:'موجود → ارسال و اطلاع به مشتری',target:'end'},
+{label:'ناموجود → تماس با مشتری و اصلاح/کنسلی',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_NO_COURIER={start:{id:'start',text:'عدم حضور پیک مجموعه/اکسپرس.',icon:'⚠️',next:'courier'},
+courier:{id:'courier',text:'پیک سفارش؟',icon:'🚚',branches:[
+{label:'پیک مجموعه',target:'vendor_absent'},{label:'اکسپرس/اکسپرس پلاس',target:'express_absent'}]},
+vendor_absent:{id:'vendor_absent',text:'اتوکال کنسلی (عدم حضور پیک مجموعه).',icon:'🤖',next:'end'},
+express_absent:{id:'express_absent',text:'آرشیو تاخیرها را چک کن.',icon:'✅',branches:[
+{label:'هایپر دیلی نیست → ثبت توضیح + ارسال اصلاحیه',target:'end'},
+{label:'هایپر دیلی است → تماس با مجموعه: با پیک خودشان می‌فرستند؟',target:'hyper'}]},
+hyper:{id:'hyper',text:'نتیجه تماس با مجموعه:',icon:'🏪',branches:[
+{label:'تأیید ارسال با پیک مجموعه → تغییر و ارسال اصلاحیه',target:'end'},
+{label:'عدم تأیید → آیا کنسلی می‌خواهند؟ بله: تماس با مشتری و کنسلی / خیر: اطلاع از صبوری',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_SHIP_FEE={start:{id:'start',text:'تغییر هزینه ارسال سفارش.',icon:'🏷️',next:'is_lower'},
+is_lower:{id:'is_lower',text:'هزینه ارسال کمتر شده؟',icon:'❓',branches:[
+{label:'بله → اصلاح هزینه و ارسال اصلاحیه',target:'end'},
+{label:'خیر (بیشتر شده)',target:'who_fault'}]},
+who_fault:{id:'who_fault',text:'خطا از سمت چه کسی؟',icon:'✅',branches:[
+{label:'مشتری → دلتا',target:'end'},
+{label:'مجموعه/اسنپ‌فود → اقناع/پیگیری → در صورت عدم اقناع: خسارت/ارجاع سرگروه',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_DUPLICATE={start:{id:'start',text:'سفارش تکراری است.',icon:'⚠️',next:'promo'},
+promo:{id:'promo',text:'با کد تخفیف ثبت شده؟',icon:'❓',branches:[
+{label:'بله → تماس با مجموعه و اعلام عدم آماده‌سازی + ارسال به سرگروه',target:'end'},
+{label:'خیر → ثبت تماس را برای تکراری بودن چک کن',target:'log_chk'}]},
+log_chk:{id:'log_chk',text:'نتیجه بررسی ثبت تماس:',icon:'✅',branches:[
+{label:'تکراری نیست → ثبت «تکراری نیست» در توضیحات',target:'end'},
+{label:'تکراری است → تماس با مشتری',target:'call_cust'}]},
+call_cust:{id:'call_cust',text:'تماس با مشتری:',icon:'☎️',branches:[
+{label:'هر دو سفارش را می‌خواهد → ثبت در توضیحات',target:'end'},
+{label:'اشتباه شده → کنسلی',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_ADDRESS_FAR={start:{id:'start',text:'آدرس خیلی دور است.',icon:'⚠️',next:'label'},
+label:{id:'label',text:'لیبل سفارش؟',icon:'🏷️',branches:[
+{label:'نیازمند تماس → اتوکال کنسلی',target:'end'},
+{label:'تأیید شده نیازمند تماس → تماس با مجموعه: آیا با مبلغ بیشتر انجام می‌دهند؟',target:'approved'}]},
+approved:{id:'approved',text:'نتیجه استعلام:',icon:'🏪',branches:[
+{label:'بله → تماس با مشتری و دلتا',target:'end'},
+{label:'خیر → تحویل حضوری سفارش',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_SYS_ISSUE={start:{id:'start',text:'سیستم سفارش‌گیری مشکل دارد.',icon:'⚠️',next:'call_vendor'},
+call_vendor:{id:'call_vendor',text:'تماس با مجموعه و پیگیری.',icon:'🏪',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_BUSY_WEATHER={start:{id:'start',text:'به دلیل شلوغی/آب‌وهوا امکان ارسال نیست.',icon:'⚠️',next:'autocancel'},
+autocancel:{id:'autocancel',text:'اتوکال کنسلی.',icon:'🤖',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_ONLY_APP={start:{id:'start',text:'مشتری فقط پیش‌غذا سفارش داده.',icon:'⚠️',next:'check_items'},
+check_items:{id:'check_items',text:'آیا «برنج» یا «سالاد سزار» دارد؟',icon:'❓',branches:[
+{label:'بله → تماس با مجموعه',target:'end'},
+{label:'خیر → اتوکال کنسلی',target:'end'}]},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_TEMP_CLOSED={start:{id:'start',text:'مجموعه موقتا بسته است.',icon:'⚠️',next:'autocancel'},
+autocancel:{id:'autocancel',text:'اتوکال کنسلی.',icon:'🤖',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+const FLOW_TECH_ISSUE={start:{id:'start',text:'مشکل فنی مجموعه (برق/گاز/…)',icon:'⚠️',next:'autocancel'},
+autocancel:{id:'autocancel',text:'اتوکال کنسلی.',icon:'🤖',next:'end'},
+end:{id:'end',text:'پایان.',icon:'🏁'}};
+
+/* ---------------------- لیست ریزن‌ها ---------------------- */
+const ALL_FLOWS={
+  pre_assign:{title:'پیش‌فلو: اساین / چک لیبل',icon:'🕒',flow:FLOW_PRE_ASSIGN},
+  item_unavailable:{title:'محصول/برند موجود نیست',icon:'🧩',flow:FLOW_ITEM_UNAVAILABLE},
+  delay:{title:'زمان ارسال/آماده‌سازی طولانی‌تر می‌شود',icon:'🕒',flow:FLOW_DELAY},
+  address_issue:{title:'آدرس مشتری ناقص/اشتباه است',icon:'⚠️',flow:FLOW_ADDRESS_ISSUE},
+  cannot_follow_note:{title:'امکان اجرای توضیحات مشتری وجود ندارد',icon:'⚠️',flow:FLOW_CANNOT_NOTE},
+  no_show_customer:{title:'مشتری برای تحویل مراجعه نکردند',icon:'⚠️',flow:FLOW_NO_SHOW},
+  weight_change:{title:'تغییر وزن محصول',icon:'🏷️',flow:FLOW_WEIGHT},
+  mismatch:{title:'سفارش با مغایرت ارسال شده',icon:'⚠️',flow:FLOW_MISMATCH},
+  no_courier:{title:'عدم حضور پیک مجموعه/اکسپرس',icon:'🚚',flow:FLOW_NO_COURIER},
+  ship_fee:{title:'تغییر هزینه ارسال سفارش',icon:'🏷️',flow:FLOW_SHIP_FEE},
+  duplicate:{title:'سفارش تکراری است',icon:'⚠️',flow:FLOW_DUPLICATE},
+  address_far:{title:'آدرس خیلی دور است',icon:'⚠️',flow:FLOW_ADDRESS_FAR},
+  sys_issue:{title:'سیستم سفارش‌گیری مشکل دارد',icon:'⚠️',flow:FLOW_SYS_ISSUE},
+  busy_weather:{title:'به‌دلیل شلوغی/آب‌وهوا',icon:'🌧️',flow:FLOW_BUSY_WEATHER},
+  only_app:{title:'مشتری فقط پیش‌غذا سفارش داده',icon:'🍟',flow:FLOW_ONLY_APP},
+  temp_closed:{title:'مجموعه موقتا بسته است',icon:'🔒',flow:FLOW_TEMP_CLOSED},
+  tech_issue:{title:'مشکل فنی مجموعه',icon:'🛠️',flow:FLOW_TECH_ISSUE}
+};
+
+/* =========================
+   2) موتور چت + جستجوی واقعی
+   ========================= */
+const stream=document.getElementById('stream');
+const actions=document.getElementById('actions');
+const sel=document.getElementById('faqSelect');
+const btnBack=document.getElementById('btnBack');
+const btnRestart=document.getElementById('btnRestart');
+const btnCopy=document.getElementById('btnCopy');
+const searchBox=document.getElementById('search');
+
+let ActiveKey=null, ActiveFlow=null, stack=[];
+let filteredKeys=[];
+
+/* ساخت/بازسازی آپشن‌های select براساس فیلتر */
+function renderSelect(filter=''){
+  const term=filter.trim().toLowerCase();
+  sel.innerHTML='';
+  const entries=Object.entries(ALL_FLOWS).filter(([k,v])=>{
+    const hay=(v.title+' '+k).toLowerCase();
+    return hay.includes(term);
+  });
+  filteredKeys=entries.map(([k])=>k);
+  if(entries.length===0){
+    const o=document.createElement('option'); o.textContent='نتیجه‌ای یافت نشد'; o.disabled=true; sel.appendChild(o);
+    return;
+  }
+  entries.forEach(([k,v])=>{
+    const o=document.createElement('option'); o.value=k; o.textContent=v.title; sel.appendChild(o);
+  });
+}
+
+/* چت پایه */
+function scrollEnd(){ stream.scrollTop=stream.scrollHeight; }
+function bubble(html, who='bot'){
+  const row=document.createElement('div'); row.className='row';
+  const av=document.createElement('div'); av.className='avatar';
+  av.textContent= who==='bot' ? (ALL_FLOWS[ActiveKey]?.icon||'🤖') : '🙋‍♀️';
+  const msg=document.createElement('div'); msg.className='msg '+(who==='bot'?'bot':'user'); msg.innerHTML=html;
+  if(who==='bot'){ row.appendChild(av); row.appendChild(msg); } else { row.appendChild(msg); row.appendChild(av); }
+  stream.appendChild(row); scrollEnd(); return msg;
+}
+function typing(on=true){
+  if(on){
+    const r=document.createElement('div'); r.className='row'; r.id='typing';
+    const av=document.createElement('div'); av.className='avatar'; av.textContent='🤖';
+    const m=document.createElement('div'); m.className='msg bot';
+    m.innerHTML=`<span class="typing"><span></span><span></span><span></span></span>`;
+    r.appendChild(av); r.appendChild(m); stream.appendChild(r); scrollEnd();
+  }else{ const t=document.getElementById('typing'); if(t) t.remove(); }
+}
+function setQuickReplies(list){ actions.innerHTML=''; (list||[]).forEach(item=>{
+  const b=document.createElement('button'); b.className='qr'; b.textContent=item.label; b.onclick=()=>choose(item); actions.appendChild(b);
+});}
+function choose(branch){ bubble(branch.label,'user'); go(branch.target); }
+
+/* محاسبه‌گر */
+function renderCalc(){
+  bubble(`<b>🧮 محاسبه و اعلام زمان نهایی</b>
+  <div class="calc">
+    <div class="row2">
+      <div><label>زمان تأیید فاکتور (HH:MM)</label><input id="tConfirm" type="time"></div>
+      <div><label>زمان اساین/سیستم (HH:MM)</label><input id="tAssign" type="time"></div>
+    </div>
+    <div class="row2" style="margin-top:6px">
+      <div><label>زمان اصلی فاکتور/ارسال (دقیقه)</label><input id="tMain" type="number" min="0"></div>
+      <div><label>زمان درخواستی مجموعه (دقیقه)</label><input id="tVendor" type="number" min="0"></div>
+    </div>
+    <div class="out" id="outBox">نتیجهٔ محاسبه اینجا نمایش داده می‌شود.</div>
+  </div>`);
+  setQuickReplies([{label:'محاسبه',target:'__calc_compute'},{label:'ادامه تماس با مشتری',target:'end'}]);
+}
+function toMin(hhmm){if(!hhmm) return NaN; const [h,m]=hhmm.split(':').map(Number); return isNaN(h)||isNaN(m)?NaN:h*60+m;}
+function doCalc(){
+  const tC=toMin(document.getElementById('tConfirm').value);
+  const tA=toMin(document.getElementById('tAssign').value);
+  const tM=parseInt(document.getElementById('tMain').value,10);
+  const tV=parseInt(document.getElementById('tVendor').value,10);
+  const out=document.getElementById('outBox');
+  if([tC,tA,tM,tV].some(x=>isNaN(x))){ out.textContent='ورودی‌ها کامل نیست.'; return; }
+  let elapsed=tA-tC; if(elapsed<0) elapsed+=1440;
+  if(elapsed>tM){ out.textContent='✅ عبور از زمان اصلی → اعلام دقیق «زمان درخواستی مجموعه»: '+tV+' دقیقه.'; }
+  else{ const final=(tM-elapsed)+tV; out.textContent='✅ زمان نهایی اعلام به مشتری: '+final+' دقیقه.'; }
+}
+
+/* حرکت در فلو */
+function go(stepId){
+  if(stepId==='__calc_compute'){ doCalc(); return; }
+  const s=ActiveFlow[stepId]; if(!s){ bubble('پایان/مسیر نامعتبر.','bot'); setQuickReplies([]); return; }
+  stack.push(stepId);
+  typing(true);
+  setTimeout(()=>{
+    typing(false);
+    bubble(`<b>${s.icon||'🔷'} ${s.text}</b>`,'bot');
+    if(s.id==='calc'){ renderCalc(); return; }
+    if(s.branches){ setQuickReplies(s.branches); }
+    else if(s.next){ setQuickReplies([{label:'ادامه', target:s.next}]); }
+    else{ setQuickReplies([]); }
+  }, 220);
+}
+
+/* startFlow: الآن خودش مرحله‌ی اول را اتومات شروع می‌کند */
+function startFlow(key, resetHash=true, autoStart=true){
+  ActiveKey=key; ActiveFlow=ALL_FLOWS[key].flow; stack=[];
+  document.title='FAQ چتی • '+ALL_FLOWS[key].title;
+  stream.innerHTML=''; actions.innerHTML='';
+  bubble(`<b>${ALL_FLOWS[key].icon||'🔷'} ${ALL_FLOWS[key].title}</b>`,'bot');
+  const st=ActiveFlow.start?.next || 'start';
+  if(autoStart){ setTimeout(()=>go(st), 180); }  // بدون دکمه «شروع فرایند»
+  sel.value=key;
+  if(resetHash) history.replaceState(null,'','#'+key);
+}
+
+/* کنترل‌های بالای صفحه */
+btnBack.onclick=()=>{
+  if(stack.length<=1) return;
+  const saved=[...stack];
+  startFlow(ActiveKey,false,false); // بدون autoStart برای ری‌پلی صحیح
+  const replay=saved.slice(0,-1);
+  function next(i){
+    if(i>=replay.length) return;
+    const sid=replay[i]; const s=ActiveFlow[sid];
+    if(i>0){ const prev=ActiveFlow[replay[i-1]];
+      if(prev && prev.branches){ const chosen=prev.branches.find(b=>b.target===sid); if(chosen) bubble(chosen.label,'user'); } }
+    go(sid); setTimeout(()=>next(i+1),60);
+  }
+  setTimeout(()=>next(0),120);
+};
+btnRestart.onclick=()=> startFlow(ActiveKey);
+btnCopy.onclick=()=>{ navigator.clipboard.writeText(location.origin+location.pathname+'#'+ActiveKey); btnCopy.textContent='کپی شد!'; setTimeout(()=>btnCopy.textContent='کپی لینک',900); };
+
+/* جستجو: فیلتر واقعی + Enter برای اجرای سریع */
+searchBox.addEventListener('input',()=>{ renderSelect(searchBox.value); });
+searchBox.addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){ if(filteredKeys.length){ startFlow(filteredKeys[0]); } }
+});
+
+/* تغییر ریزن: بلافاصله شروع کن */
+sel.onchange=()=> startFlow(sel.value);
+
+/* بوت اولیه */
+renderSelect('');
+const hash=decodeURIComponent(location.hash||'').replace('#','');
+const firstKey= ALL_FLOWS[hash]? hash : Object.keys(ALL_FLOWS)[0];
+startFlow(firstKey,false,true);
+</script>
+</body>
+</html>
 
